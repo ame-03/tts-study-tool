@@ -1,28 +1,19 @@
 from splitter import split_text
 from tts_engine import synthesize
 from player import AudioPlayer
+from session import LearningSession
 
 import os
 import time
 
 CACHE_DIR = "data/audio_cache"
 
-class LearningSession:
-    def __init__(self, player, file_list):
-        self.player = player
-        self.file_list = file_list
 
-    def shadowing(self, pause=2.0):
-        print("\n--- Shadowing Mode ---")
-        print("Press Ctrl+C to stop\n")
-
-        try:
-            for file in self.file_list:
-                self.player.play([file])
-                time.sleep(pause)
-                self.player.play([file])
-        except KeyboardInterrupt:
-            print("\nStopped.")
+def _print_progress(self, current, total, bar_length=20):
+       progress = current / total
+       filled = int(bar_length * progress)
+       bar = "#" * filled + "-" * (bar_length - filled)
+       print(f"\r[{bar}] {current}/{total}", end="", flush=True)
 
 def ensure_cache_dir():
     if not os.path.exists(CACHE_DIR):
@@ -83,7 +74,7 @@ def main():
                 os.path.join(CACHE_DIR, f"output_{i}.mp3")
                 for i in range(len(chunks))
             ]
-            session = LearningSession(player, file_list)
+            session = LearningSession(player, file_list, chunks)
             session.shadowing(pause=2.0)
 
         elif choice == "q":
