@@ -3,8 +3,26 @@ from tts_engine import synthesize
 from player import AudioPlayer
 
 import os
+import time
 
 CACHE_DIR = "data/audio_cache"
+
+class LearningSession:
+    def __init__(self, player, file_list):
+        self.player = player
+        self.file_list = file_list
+
+    def shadowing(self, pause=2.0):
+        print("\n--- Shadowing Mode ---")
+        print("Press Ctrl+C to stop\n")
+
+        try:
+            for file in self.file_list:
+                self.player.play([file])
+                time.sleep(pause)
+                self.player.play([file])
+        except KeyboardInterrupt:
+            print("\nStopped.")
 
 def ensure_cache_dir():
     if not os.path.exists(CACHE_DIR):
@@ -44,6 +62,7 @@ def main():
             print(f"[{i}] {chunk}")
         print("[a] play all")
         print("[s] change speed")
+        print("[h] shadowing mode")
         print("[q] quit")
 
         choice = input("Select: ")
@@ -58,6 +77,14 @@ def main():
                 print(f"Speed set to {new_speed}")
             except ValueError:
                 print("Invalid number.")
+
+        elif choice == "h":
+            file_list = [
+                os.path.join(CACHE_DIR, f"output_{i}.mp3")
+                for i in range(len(chunks))
+            ]
+            session = LearningSession(player, file_list)
+            session.shadowing(pause=2.0)
 
         elif choice == "q":
             break
