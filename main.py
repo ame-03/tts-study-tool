@@ -47,6 +47,12 @@ def main():
     ensure_cache_dir()
     generate_all(chunks)
 
+    file_list = [
+        os.path.join(CACHE_DIR, f"output_{i}.mp3")
+        for i in range(len(chunks))
+    ]
+    session = LearningSession(player, file_list, chunks)
+
     while True:
         print("\n--- MENU ---")
         for i, chunk in enumerate(chunks):
@@ -73,43 +79,23 @@ def main():
                 print("Invalid number.")
 
         elif choice == "h":
-            file_list = [
-                os.path.join(CACHE_DIR, f"output_{i}.mp3")
-                for i in range(len(chunks))
-            ]
-            session = LearningSession(player, file_list, chunks)
             session.shadowing(pause=2.0)
 
         elif choice == "r":
-            file_list = [
-                os.path.join(CACHE_DIR, f"output_{i}.mp3")
-                for i in (len(chunks))
-            ]
             try:
                 count = int(input("Repeat(defult3): ") or "3")
             except ValueError:
                 count = 3
-            session = LearningSession(player, file_list, chunks)
             session.repeat_mode(repeat_count=count, pause=1.5)
 
         elif choice == "b":
-            file_list = [
-                os.path.join(CACHE_DIR, f"output_{i}.mp3")
-                for i in range(len(chunks))
-            ]
             try:
-                count = int(input("繰り返し回数 (デフォルト3): ") or "3")
+                count = int(input("Repeat (defult3): ") or "3")
             except ValueError:
                 count = 3
-            session = LearningSession(player, file_list, chunks)
             session.ab_repeat(repeat_count=count, pause=1.5)
 
         elif choice == "w":
-            file_list = [
-                os.path.join(CACHE_DIR, f"output_{i}.mp3")
-                for i in range(len(chunks))
-            ]
-            session = LearningSession(player, file_list, chunks)
             session.save_script()
 
         elif choice == "q":
